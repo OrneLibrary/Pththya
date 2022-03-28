@@ -164,8 +164,8 @@ Set-NetworkAdapter -NetworkAdapter $currentNIC -MacAddress "00:50:56:17:90:21" -
 New-NetworkAdapter -VM $currentVM -StartConnected -NetworkName "Target" | Out-Null
 Start-VM -VM $currentVM | Out-Null
 Start-Sleep-Custom -Seconds 60 -Message "Waiting for $currentVM to fully boot..."
+Invoke-VMScript -VM $currentVM -guestUser 'cpt' -guestPassword $guestPassword -ScriptText "sudo nmcli con add con-name TargetNet type ethernet ifname eth0 ipv4.method auto ipv4.ignore-auto-dns false & sudo nmcli con modify 'Wired connection 1' con-name NodeNet ifname eth1 ipv4.method auto ipv4.never-default yes ipv4.dns 172.20.20.1" | Out-Null
 Invoke-VMScript -VM $currentVM -guestUser "cpt" -guestPassword $guestPassword -ScriptText "sudo hostnamectl set-hostname 'CPT-Kali' && sudo sed -i 's/kali/CPT-Kali/g' /etc/hosts && sudo gpasswd --delete cpt kali-trusted" | Out-Null
-Invoke-VMScript -VM $currentVM -guestUser 'cpt' -guestPassword $guestPassword -ScriptText "nmcli con add con-name TargetNet type ethernet ifname eth0 ipv4.method auto ipv4.ignore-auto-dns flase & nmcli con modify 'Wired connection 1' con-name NodeNet ifname eth1 ipv4.method auto ipv4.never-default yes ipv4.dns 172.20.20.1"
 Shutdown-VMGuest -VM $currentVM -Confirm:$false | Out-Null
 Start-Sleep-Custom -Seconds 10 -Message "Waiting for $currentVM to fully shutdown..."
 New-Snapshot -VM $currentVM -Name "Gold" -Description "Lab provided Gold image" | Out-Null
