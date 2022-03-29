@@ -18,4 +18,4 @@ Templates are not supplied in this repo. Made for 1-10 users.
 ### Olmstead
 
 Tears down ESXi environment.  
-Only thing left is vswitch0 to allow for continued connection.
+Only thing left is vSwitch0 to allow for continued connection.
