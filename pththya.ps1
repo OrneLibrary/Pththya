@@ -1,5 +1,34 @@
-# Custom sleep
+<#
+    .SYNOPSIS
+    Deploys a pre-built and confiugure penetration testing environment.
+
+    .DESCRIPTION
+    Deploys a pre-built and confiugure penetration testing environment.
+    Templates are not supplied in this repo. Made for 1-10 users.
+
+    .LINK
+    Github: https://github.com/OrneLibrary/Pththya
+#>
+
+
+
+
 function Start-Sleep-Custom($Seconds,$Message) {
+    <#
+        .SYNOPSIS
+        SLeep with message and progress banner
+
+        .PARAMETER Seconds
+        Lenght of sleep in seconds
+
+        .PARAMETER Message
+        Message to display in progress banner
+
+        .EXAMPLE
+        Start-Sleep-Custom -Seconds 30 -Message "Waiting for thing"
+
+    #>
+
     $doneDT = (Get-Date).AddSeconds($seconds)
     while($doneDT -gt (Get-Date)) {
         $secondsLeft = $doneDT.Subtract((Get-Date)).TotalSeconds
@@ -63,10 +92,12 @@ while ($true){
 
 
 # Check for correcnt default NIC configuration
-if ((Get-VirtualSwitch -name "vswitch0" -VMHost $vmHost | Select-Object -ExpandProperty Nic) -notmatch 'vmnic5') {
-    Write-Host "vSwitch0 needs to be set to vmnic5 in the Virtual Switch tab for proper deployment.`nPlease make that configuration change now and restart the script to ensure proper network conntecion to the new port."  -ForegroundColor Red -BackgroundColor Black
-    pause
-    exit
+while ($true){
+    if ((Get-VirtualSwitch -name "vswitch0" -VMHost $vmHost | Select-Object -ExpandProperty Nic) -notmatch 'vmnic5') {
+        Write-Host "vSwitch0 needs to be set to vmnic5 in the Virtual Switch tab for proper deployment.`nPlease make that configuration change before continuing."  -ForegroundColor Red -BackgroundColor Black
+        pause
+    }
+    else { Break }
 }
 
 
@@ -87,7 +118,7 @@ while ($true) {
     if ($opNetworkIP -match $pattern) { Break }
 }
 while ($true) {
-    $opNetworkSub = Read-Host -Prompt "`nEnter the subnet mask for the Mission LAN"
+    $opNetworkSub = Read-Host -Prompt "`nEnter the subnet mask for the Mission LAN (ex. 255.255.255.0)"
     if ($opNetworkSub -match $pattern) { Break }
 }
 
@@ -100,6 +131,7 @@ while ($true) {
 }
 
 
+# Setting up the networking 
 Write-Host "Setting up networking..."
 New-VirtualSwitch -Name "cpt.local" -Nic (Get-VMHostNetworkAdapter -Name "vmnic2" -VMHost $vmHost) -VMHost $vmHost | Out-Null
 Add-VirtualSwitchPhysicalNetworkAdapter -VirtualSwitch (Get-VirtualSwitch -Name "cpt.local" -VMHost $vmHost) -VMHostPhysicalNic (Get-VMHostNetworkAdapter -Name "vmnic3"  -VMHost $vmHost) -Confirm:$false
@@ -171,7 +203,7 @@ Start-Sleep-Custom -Seconds 10 -Message "Waiting for $currentVM to fully shutdow
 New-Snapshot -VM $currentVM -Name "Gold" -Description "Lab provided Gold image" | Out-Null
 
 
-# Deploying Kali
+# Deploying Kalis
 $macCounter = 30
 for ($i=0 ; $i -lt $numOfOperators ; $i++) {
     Write-Host "Deploying Kali-$i"
@@ -205,7 +237,7 @@ Start-Sleep-Custom -Seconds 10 -Message "Waiting for $currentVM to fully shutdow
 New-Snapshot -VM $currentVM -Name "Gold" -Description "Lab provided Gold image" | Out-Null
 
 
-# Deploying Commando
+# Deploying Commandos
 $macCounter = 40
 for ($i=0 ; $i -lt $numOfOperators ; $i++) {
     Write-Host "Deploying Commando-$i"
