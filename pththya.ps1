@@ -92,10 +92,12 @@ while ($true){
 
 
 # Check for correcnt default NIC configuration
-if ((Get-VirtualSwitch -name "vswitch0" -VMHost $vmHost | Select-Object -ExpandProperty Nic) -notmatch 'vmnic5') {
-    Write-Host "vSwitch0 needs to be set to vmnic5 in the Virtual Switch tab for proper deployment.`nPlease make that configuration change now and restart the script to ensure proper network conntecion to the new port."  -ForegroundColor Red -BackgroundColor Black
-    pause
-    exit
+while ($true){
+    if ((Get-VirtualSwitch -name "vswitch0" -VMHost $vmHost | Select-Object -ExpandProperty Nic) -notmatch 'vmnic5') {
+        Write-Host "vSwitch0 needs to be set to vmnic5 in the Virtual Switch tab for proper deployment.`nPlease make that configuration change before continuing."  -ForegroundColor Red -BackgroundColor Black
+        pause
+    }
+    else { Break }
 }
 
 
