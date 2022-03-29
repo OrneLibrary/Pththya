@@ -4,7 +4,7 @@
 
     .DESCRIPTION
     Tears down ESXi environment.
-    Only thing left is vswitch0 to allow for continued connection.
+    Only thing left is vSwitch0 to allow for continued connection.
 
     .LINK
     Github: https://github.com/OrneLibrary/Pththya
@@ -20,7 +20,7 @@ if ($host.name -match 'Windows PowerShell ISE Host')
 }
 
 
-Write-Host "This script will remove everything from the ESXi host except the Datastore and vswitch0.`nEnsure your connection to the ESXi host runs through vswitch0 so the process is able to finish." -ForegroundColor Yellow -BackgroundColor Black
+Write-Host "This script will remove everything from the ESXi host except the Datastore and vSwitch0.`nEnsure your connection to the ESXi host runs through vSwitch0 so the process is able to finish." -ForegroundColor Yellow -BackgroundColor Black
 Pause
 
 # Install and import PowerCli
@@ -74,6 +74,6 @@ foreach ($vm in (Get-VM -Datastore $datastore)) { Write-Host $vm.name }
 Write-Host "`nSwitches:"
 foreach ($switch in (Get-VirtualSwitch -VMHost $vmHost)) { if ($switch.Name -ne "vSwitch0") { Write-Host $switch.Name }}
 Pause
-foreach ($vm in (Get-VM -Datastore $datastore)) { Write-Host "Deleting: $vm.Name";Remove-VM -VM $vm -DeletePermanently -Confirm:$false }
-foreach ($nic in (Get-VMHostNetworkAdapter -VMHost $vmHost)){ if (@("vmk1"."vmk2").contains($nic.Name)) { Write-Host "Deleting: $nic.Name";Remove-VMHostNetworkAdapter -Nic $nic }}
-foreach ($switch in (Get-VirtualSwitch -VMHost $vmHost)) { if ($switch.Name -ne "vSwitch0") {Write-Host "Deleting: $switch.Name";Remove-VirtualSwitch -VirtualSwitch $switch }}
+foreach ($vm in (Get-VM -Datastore $datastore)) { Write-Host "Deleting: $vm";Remove-VM -VM $vm -DeletePermanently -Confirm:$false }
+foreach ($nic in (Get-VMHostNetworkAdapter -VMHost $vmHost)){ if (@("vmk1","vmk2").contains($nic.Name)) { Write-Host "Deleting: $nic";Remove-VMHostNetworkAdapter -Nic $nic -Confirm:$false }}
+foreach ($switch in (Get-VirtualSwitch -VMHost $vmHost)) { if ($switch.Name -ne "vSwitch0") {Write-Host "Deleting: $switch";Remove-VirtualSwitch -VirtualSwitch $switch -Confirm:$false }}
