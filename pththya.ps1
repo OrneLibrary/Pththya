@@ -1,9 +1,9 @@
 <#
     .SYNOPSIS
-    Deploys a pre-built and confiugure penetration testing environment.
+    Deploys a pre-built and configure penetration testing environment.
 
     .DESCRIPTION
-    Deploys a pre-built and confiugure penetration testing environment.
+    Deploys a pre-built and configure penetration testing environment.
     Templates are not supplied in this repo. Made for 1-10 users.
 
     .LINK
@@ -19,7 +19,7 @@ function Start-Sleep-Custom($Seconds,$Message) {
         SLeep with message and progress banner
 
         .PARAMETER Seconds
-        Lenght of sleep in seconds
+        Length of sleep in seconds
 
         .PARAMETER Message
         Message to display in progress banner
@@ -61,7 +61,7 @@ Get-Module -ListAvailable VMware* | Import-Module | Out-Null
 Clear-Host
 
 
-# Get user information and loginto vCenter
+# Get user information and log into vCenter
 while ($true) {
     $vCenterServer = Read-Host -Prompt "IP or FQDN of vCenter server"
     $vCenterUsername = Read-Host -Prompt "vCenter username"
@@ -91,7 +91,7 @@ while ($true){
 }
 
 
-# Check for correcnt default NIC configuration
+# Check for correct default NIC configuration
 while ($true){
     if ((Get-VirtualSwitch -name "vswitch0" -VMHost $vmHost | Select-Object -ExpandProperty Nic) -notmatch 'vmnic5') {
         Write-Host "vSwitch0 needs to be set to vmnic5 in the Virtual Switch tab for proper deployment.`nPlease make that configuration change before continuing."  -ForegroundColor Red -BackgroundColor Black
@@ -167,7 +167,7 @@ New-Snapshot -VM $currentVM -Name "Gold" -Description "Lab provided Gold image" 
 
 
 # List of all servers.
-# Names and order matter here as they are used as template refrences and DNS
+# Names and order matter here as they are used as template references and DNS
 $serverList = "PTP","C2","Share","Nessus","Planka","Mattermost","Neo4j","Utility"
 
 $macCounter = 10
@@ -221,7 +221,7 @@ for ($i=0 ; $i -lt $numOfOperators ; $i++) {
 }
 
 
-#Deploying CPT Commanod
+#Deploying CPT Commando
 Write-Host "Deploying CPT-Commando"
 $template = Get-Template -Name "Commando Gold"
 New-VM -Name "CPT-Commando" -Template $template -Datastore $datastore -DiskStorageFormat Thin -VMHost $vmHost | Out-Null
