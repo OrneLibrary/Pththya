@@ -74,6 +74,8 @@ foreach ($vm in (Get-VM -Datastore $datastore)) { Write-Host $vm.name }
 Write-Host "`nSwitches:"
 foreach ($switch in (Get-VirtualSwitch -VMHost $vmHost)) { if ($switch.Name -ne "vSwitch0") { Write-Host $switch.Name }}
 Pause
+Write-Host "Shutting down all VMs"
+foreach ($vm in (Get-VM -Datastore $datastore)) { Stop-VM -VM $vm }
 foreach ($vm in (Get-VM -Datastore $datastore)) { Write-Host "Deleting: $vm";Remove-VM -VM $vm -DeletePermanently -Confirm:$false }
 foreach ($nic in (Get-VMHostNetworkAdapter -VMHost $vmHost)){ if (@("vmk1","vmk2").contains($nic.Name)) { Write-Host "Deleting: $nic";Remove-VMHostNetworkAdapter -Nic $nic -Confirm:$false }}
 foreach ($switch in (Get-VirtualSwitch -VMHost $vmHost)) { if ($switch.Name -ne "vSwitch0") {Write-Host "Deleting: $switch";Remove-VirtualSwitch -VirtualSwitch $switch -Confirm:$false }}
