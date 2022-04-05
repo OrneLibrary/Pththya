@@ -18,8 +18,8 @@ Pause
 Test-PSInterpreter
 Import-PowerCLI
 Initialize-VCenter
-Get-Node
-Get-NodeDatastore
+$vmHost = Get-Node
+$datastore = Get-NodeDatastore -vmHost $vmHost
 
 Write-Host "`n`nYou are about to delete the following:`n`nVMs:`n"
 foreach ($vm in (Get-VM -Datastore $datastore)) { Write-Host $vm.name }

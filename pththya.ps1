@@ -15,8 +15,8 @@ Import-Module .\obed.psm1
 Test-PSInterpreter
 Import-PowerCLI
 Initialize-VCenter
-Get-Node
-Get-NodeDatastore
+$vmHost = Get-Node
+$datastore = Get-NodeDatastore -vmHost $vmHost
 
 # Password for changing host names on the Kali and Commando boxes
 $guestPassword = Read-Host -Prompt "Password for CPT account on Kali and Commando" -AsSecureString

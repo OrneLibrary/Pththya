@@ -106,10 +106,11 @@ function Get-Node {
         if (-not $vmHost) { Write-Host "Host name wrong. Try again.`n" -ForegroundColor Red -BackgroundColor Black }
         else { Break }
     }
+    return $vmHost
 
 }
 
-function Get-NodeDatastore{
+function Get-NodeDatastore ($vmHost) {
     <#
         .SYNOPSIS
         Gets the Datastore to be worked on.
@@ -123,5 +124,6 @@ function Get-NodeDatastore{
         if (-not $datastore) { Write-Host "Datastore name incorrect!!!" -ForegroundColor Red -BackgroundColor Black }
         else { Break }
     }
+    return $datastore
 
 }
