@@ -1,6 +1,6 @@
 {
-    "Networks":{
-        "Network Name":{
+    "Networks":[
+        {
             // Required
             "name":"NetworkName",  // Name of network in VMWare
 
@@ -10,13 +10,13 @@
             "managementIP":"172.20.20.2", // Adding this makes a new port group with an administrative interface
             "managementMask":"255.255.255.0" //Required if managementIP is used.
         },
-        "Second Network":{
+        {
             "name":"Second Network",
             "nic1":"vmnic2"
         }
-    },
-    "VMs":{
-        "VM Name":{
+    ],
+    "VMs":[
+        {
             // Required
             "name":"VM Name",
             "templateName":"Template Name",  // Exact name of template in vCenter
@@ -36,7 +36,7 @@
                 "scriptText3":"CLI script to run on host"  // When using the "number key you can us $i as a variable. See example below
             }
         },
-        "Test Server":{
+        {
             "name":"Test Server",
             "templateName":"Test Gold",
             "mac":"00:50:56:CE:3A:74",
@@ -45,7 +45,7 @@
                 "scriptText1":"Rename-Computer -NewName 'Test Computer'"
             }
         },
-        "Operator":{
+        {
             "name":"Test Computer",
             "templateName":"Test Gold",
             "number":10,
@@ -55,5 +55,5 @@
                 "scriptText1":"Rename-Computer -NewName 'Test Computer $i'"  // $i will start at 0 and count to 9 in this case
             }
         }
-    }
+    ]
 }
