@@ -1,0 +1,59 @@
+{
+    "Networks":{
+        "Network Name":{
+            // Required
+            "name":"NetworkName",  // Name of network in VMWare
+
+            // Optional
+            "nic1":"vmnic3",  // Physical NIC to attach to switch
+            "nic2":"vmnic1",  // Use nic# naming for key. Able to add up to amount of physical NICs
+            "managementIP":"172.20.20.2", // Adding this makes a new port group with an administrative interface
+            "managementMask":"255.255.255.0" //Required if managementIP is used.
+        },
+        "Second Network":{
+            "name":"Second Network",
+            "nic1":"vmnic2"
+        }
+    },
+    "VMs":{
+        "VM Name":{
+            // Required
+            "name":"VM Name",
+            "templateName":"Template Name",  // Exact name of template in vCenter
+            "mac":"00:50:56:48:23:99",  // Must have unique MAC address
+
+            // Optional
+            "startAction":"PowerOn",  // If set this will autostart the VM when ESXi boots
+            "number":5, // Allows multiple of the same configuration deployed at once.
+            "macStart":"00:50:56:48:23:47", // Takes the place of mac. Will increment the last octet
+            "networkAdapter1":{  // Use networkAdampter# to add multiple
+                "networkName":"Target"  // Required if adding additional network adapters
+            },
+            "commands":{
+                "userName":"user",  // User name of account on VM.
+                "scriptText1":"CLI script to run on host",  // Run commands native to VM's OS
+                "scriptText2":"CLI script to run on host",  // Use scriptText# to add multiple commands. Unlimited commands
+                "scriptText3":"CLI script to run on host"  // When using the "number key you can us $i as a variable. See example below
+            }
+        },
+        "Test Server":{
+            "name":"Test Server",
+            "templateName":"Test Gold",
+            "mac":"00:50:56:CE:3A:74",
+            "commands":{
+                "userName":"testUser",
+                "scriptText1":"Rename-Computer -NewName 'Test Computer'"
+            }
+        },
+        "Operator":{
+            "name":"Test Computer",
+            "templateName":"Test Gold",
+            "number":10,
+            "macStart":"00:50:56:CE:3A:30",
+            "commands":{
+                "userName":"testUser",
+                "scriptText1":"Rename-Computer -NewName 'Test Computer $i'"  // $i will start at 0 and count to 9 in this case
+            }
+        }
+    }
+}
