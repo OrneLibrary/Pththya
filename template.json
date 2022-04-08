@@ -5,14 +5,16 @@
             "name":"NetworkName",  // Name of network in VMWare
 
             // Optional
-            "nic1":"vmnic3",  // Physical NIC to attach to switch
-            "nic2":"vmnic1",  // Use nic# naming for key. Able to add up to amount of physical NICs
+            "nics":[               // Physical NIC to attach to switch
+                "vmnic3",
+                "vmnic5"
+            ],
             "managementIP":"172.20.20.2", // Adding this makes a new port group with an administrative interface
             "managementMask":"255.255.255.0" //Required if managementIP is used.
         },
         {
             "name":"Second Network",
-            "nic1":"vmnic2"
+            "nic":"vmnic2"  // Single nic
         }
     ],
     "VMs":[
@@ -23,7 +25,9 @@
             "mac":"00:50:56:48:23:99",  // Must have unique MAC address
 
             // Optional
-            "startAction":"PowerOn",  // If set this will autostart the VM when ESXi boots
+            "startAction":1,  // If set this will autostart the VM when ESXi boots
+            "startOrder":1,  //Sets start order number. Not requiered but needs startAction to be set
+            "startDelay":120,  //Sets delay for
             "number":5, // Allows multiple of the same configuration deployed at once.
             "macStart":"00:50:56:48:23:47", // Takes the place of mac. Will increment the last octet
             "networkAdapter1":{  // Use networkAdampter# to add multiple
