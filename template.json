@@ -5,7 +5,8 @@
             "name":"NetworkName",  // Name of network in VMWare
 
             // Optional
-            "nics":[               // Physical NIC to attach to switch
+            "nic":"vmnic2",    //Single physical NIC to attach to switch
+            "nics":[               // Multiple physical NIC to attach to switch
                 "vmnic3",
                 "vmnic5"
             ],
@@ -14,7 +15,7 @@
         },
         {
             "name":"Second Network",
-            "nic":"vmnic2"  // Single nic
+            "nic":"vmnic2"
         }
     ],
     "VMs":[
@@ -26,19 +27,19 @@
 
             // Optional
             "startAction":1,  // If set this will autostart the VM when ESXi boots
-            "startOrder":1,  //Sets start order number. Not requiered but needs startAction to be set
+            "startOrder":1,  //Sets start order number. Not required but needs startAction to be set
             "startDelay":120,  //Sets delay for
             "number":5, // Allows multiple of the same configuration deployed at once.
-            "macStart":"00:50:56:48:23:47", // Takes the place of mac. Will increment the last octet
-            "networkAdapter1":{  // Use networkAdampter# to add multiple
-                "networkName":"Target"  // Required if adding additional network adapters
-            },
-            "commands":{
-                "userName":"user",  // User name of account on VM.
-                "scriptText1":"CLI script to run on host",  // Run commands native to VM's OS
-                "scriptText2":"CLI script to run on host",  // Use scriptText# to add multiple commands. Unlimited commands
-                "scriptText3":"CLI script to run on host"  // When using the "number key you can us $i as a variable. See example below
-            }
+            "macStart":"00:50:56:48:23:47", // Takes the place of mac. Will increment the last octet when using number. Please keep last octet as an int
+            "networkAdapter":[  // Use to add extra adapters
+                "Target",
+                "Guest"
+            ],
+            "commands":[  
+                "CLI script to run on host",  // Run commands native to VM's OS
+                "CLI script to run on host"  // When using the "number" key you can us $i as a variable. See example below
+            ],
+            "userName":"user"  // User name of account on VM. Required for commands
         },
         {
             "name":"Test Server",
@@ -54,10 +55,10 @@
             "templateName":"Test Gold",
             "number":10,
             "macStart":"00:50:56:CE:3A:30",
-            "commands":{
-                "userName":"testUser",
-                "scriptText1":"Rename-Computer -NewName 'Test Computer $i'"  // $i will start at 0 and count to 9 in this case
-            }
+            "userName":"user",
+            "commands":[
+                "Rename-Computer -NewName 'Test Computer $i'"  // $i will start at 0 and count to 9 in this case
+            ]
         }
     ]
 }
