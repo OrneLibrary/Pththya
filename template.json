@@ -1,4 +1,12 @@
 {
+    "Config":{
+
+        // Optional
+        "vcenterServer":"192.168.1.1",  // Can be IP or FQDN
+        "vcenterUser":"administrator@lab.local",  // Must be domain account
+        "vmHost":"192.168.1.2",  // IP of ESXi server to deploy to
+        "vmDatastore":"datastore"
+    },
     "Networks":[
         {
             // Required
