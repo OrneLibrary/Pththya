@@ -22,9 +22,9 @@ Import-Module .\obed.psm1
 
 Test-PSInterpreter
 Import-PowerCLI
-Initialize-VCenter
-$vmHost = Get-Node
-$datastore = Get-NodeDatastore -vmHost $vmHost
+Initialize-VCenter -config $jsonConfig.Config
+$vmHost = Get-Node -config $jsonConfig.Config
+$datastore = Get-NodeDatastore -vmHost $vmHost -config $jsonConfig.Config
 
 # Password for running commands on VMs
 $guestPassword = Read-Host -Prompt "Password for CPT account on Kali and Commando" -AsSecureString
