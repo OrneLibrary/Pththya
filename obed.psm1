@@ -40,7 +40,7 @@ function Start-SleepCustom($Seconds,$Message) {
 function Test-PSInterpreter{
     <#
         .SYNOPSIS
-        Check is ISE is being used. Exits if ISE is detected.
+        Check is ISE is being used. Exits if ISE is detected
     #> 
 
     if ($host.name -match 'Windows PowerShell ISE Host')
@@ -55,7 +55,7 @@ function Test-PSInterpreter{
 function Import-PowerCLI{
     <#
         .SYNOPSIS
-        Installs and imports all PowerCLI tools from VMWare.
+        Installs and imports all PowerCLI tools from VMWare
     #> 
 
     if (-not (Test-Path -Path $home\Documents\WindowsPowerShell\Modules)) { New-Item -ItemType Directory -Path $home\Documents\WindowsPowerShell\Modules }
@@ -71,15 +71,18 @@ function Import-PowerCLI{
 }
 
 
-function Initialize-VCenter{
+function Initialize-VCenter($config){
     <#
         .SYNOPSIS
-        Connects to vCenter server.
+        Connects to vCenter server
+
+        .PARAMETER config
+        Configuration for login details
     #> 
 
     while ($true) {
-        $vCenterServer = Read-Host -Prompt "IP or FQDN of vCenter server"
-        $vCenterUsername = Read-Host -Prompt "vCenter username"
+        $vCenterServer = if ($config.vcenterServer) {$config.vcenterServer} else {Read-Host -Prompt "IP or FQDN of vCenter server"}
+        $vCenterUsername = if ($config.vcenterUser) {$config.vcenterUser} else {Read-Host -Prompt "vCenter username"}
         $vCenterPassword = Read-Host -Prompt "vCenter password" -AsSecureString
         $vCenterPassword = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($vCenterPassword))
         Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false | Out-Null
@@ -92,11 +95,21 @@ function Initialize-VCenter{
 
 }
 
-function Get-Node {
+function Get-Node ($config){
     <#
         .SYNOPSIS
-        Gets the node to be worked on.
+        Gets the node to be worked on
+
+        .PARAMETER config
+        Configuration for login details
     #> 
+
+    if ($config.vmHost){
+        Write-Host "Attempting connection to " $config.vmHost
+        $vmHost = Get-VMHost -Name $config.vmHost -ErrorAction SilentlyContinue
+        if (-not $vmHost) { Write-Host "Host name in config file wrong. Please set manually.`n`n" -ForegroundColor Red -BackgroundColor Black }
+        else {return $vmHost}
+    }
 
     Write-Host `n`n VM Hosts:`n
     foreach ($hostName in Get-VMHost) { Write-Host $hostName }
@@ -110,15 +123,24 @@ function Get-Node {
 
 }
 
-function Get-NodeDatastore ($vmHost) {
+function Get-NodeDatastore ($vmHost,$config) {
     <#
         .SYNOPSIS
-        Gets the Datastore to be worked on.
+        Gets the Datastore to be worked on
 
         .PARAMETER vmhost
         VMHost object
+
+        .PARAMETER config
+        Configuration for login details
     #> 
 
+    if ($config.vmDatastore){
+        Write-Host "Attempting to mount " $config.vmDatastore
+        $datastore = Get-Datastore -Name $config.vmDatastore -ErrorAction SilentlyContinue
+        if (-not $datastore) { Write-Host "Datastore name in config file wrong. Please set manually.`n`n" -ForegroundColor Red -BackgroundColor Black }
+        else {return $datastore}
+    }
     Write-Host `n`nData Stores:`n
     foreach ($datastName in ($vmHost | Get-Datastore)) { Write-Host $datastName }
     while ($true) {
