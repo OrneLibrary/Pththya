@@ -90,7 +90,7 @@ New-Snapshot -VM $currentVM -Name "Gold" -Description "Lab provided Gold image" 
 
 # List of all servers.
 # Names and order matter here as they are used as template references and DNS
-$serverList = "PTP","C2","Share","Nessus","Planka","Mattermost","Neo4j","Utility"
+$serverList = "PTP","C2","Share","Nessus","Planka","Mattermost","Neo4j","GoPhish","Utility"
 
 $macCounter = 10
 # Loop to deploy servers
