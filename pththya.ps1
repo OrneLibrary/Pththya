@@ -59,7 +59,7 @@ New-VirtualSwitch -Name "cpt.local" -Nic (Get-VMHostNetworkAdapter -Name "vmnic2
 Add-VirtualSwitchPhysicalNetworkAdapter -VirtualSwitch (Get-VirtualSwitch -Name "cpt.local" -VMHost $vmHost) -VMHostPhysicalNic (Get-VMHostNetworkAdapter -Name "vmnic3"  -VMHost $vmHost) -Confirm:$false
 New-VirtualPortGroup -Name "cpt.local" -VirtualSwitch (Get-VirtualSwitch -Name "cpt.local"  -VMHost $vmHost) | Out-Null
 New-VirtualPortGroup -Name "cpt.local Management" -VirtualSwitch (Get-VirtualSwitch -Name "cpt.local"  -VMHost $vmHost) | Out-Null
-New-VMHostNetworkAdapter -PortGroup (Get-VirtualPortGroup -Name "cpt.local Management"  -VMHost $vmHost) -VirtualSwitch (Get-VirtualSwitch -Name "cpt.local"  -VMHost $vmHost) -ManagementTrafficEnabled $true -IP "172.20.20.2" -SubnetMask "255.255.255.0" | Out-Null
+New-VMHostNetworkAdapter -PortGroup (Get-VirtualPortGroup -Name "cpt.local Management"  -VMHost $vmHost) -VirtualSwitch (Get-VirtualSwitch -Name "cpt.local"  -VMHost $vmHost) -ManagementTrafficEnabled $true -Mac "00:50:56:17:90:02" | Out-Null
 
 
 New-VirtualSwitch -Name "Cell Router" -Nic (Get-VMHostNetworkAdapter -Name "vmnic1" -VMHost $vmHost) -VMHost $vmHost | Out-Null
