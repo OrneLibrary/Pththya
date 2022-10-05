@@ -138,19 +138,23 @@ $serverList = @(
     }
 )
 
-$macCounter = 10
 # Loop to deploy servers
 foreach ($server in $serverList) {
-    Write-Host "Deploying $server"
-    $template = Get-Template -Name "$server Gold"
-    $server = $server
-    New-VM -Name $server -Template $template -Datastore $datastore -DiskStorageFormat Thin -VMHost $vmHost | Out-Null
-    $currentVM = Get-VM -Name $server -Datastore $datastore
+    Write-Host "Deploying $($server.name)"
+    $template = Get-Template -Name "Server Gold"
+    New-VM -Name $server.name -Template $template -Datastore $datastore -DiskStorageFormat Thin -VMHost $vmHost | Out-Null
+    $currentVM = Get-VM -Name $server.name -Datastore $datastore
     $currentNIC = Get-NetworkAdapter -VM $currentVM
-    Set-NetworkAdapter -NetworkAdapter $currentNIC -MacAddress "00:50:56:17:90:$macCounter" -Confirm:$false | Out-Null
+    Set-NetworkAdapter -NetworkAdapter $currentNIC -MacAddress "00:50:56:17:90:$($server.mac)" -Confirm:$false | Out-Null
     Get-VMStartPolicy -VM $currentVM | Set-VMStartPolicy -StartAction PowerOn | Out-Null
+    Start-VM -VM $currentVM | Out-Null
+    Start-SleepCustom -Seconds 60 -Message "Waiting for $currentVM to fully boot..."
+    Invoke-VMScript -VM $currentVM -guestUser 'cpt' -guestPassword $guestPassword -ScriptText $server.cmd
+    Invoke-VMScript -VM $currentVM -guestUser 'cpt' -guestPassword $guestPassword -ScriptText "sudo gpasswd --delete cpt server-gold-trusted"
+    Invoke-VMScript -VM $currentVM -guestUser 'cpt' -guestPassword $guestPassword -ScriptText "sleep 1m"
+    Shutdown-VMGuest -VM $currentVM -Confirm:$false | Out-Null
+    Start-SleepCustom -Seconds 10 -Message "Waiting for $currentVM to fully shutdown..."
     New-Snapshot -VM $currentVM -Name "Gold" -Description "Lab provided Gold image" | Out-Null
-    $macCounter++
 }
 
 
