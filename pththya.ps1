@@ -93,55 +93,55 @@ $template = Get-Template -Name "Server Gold"
 New-VM -Name $templateName -Template $template -Datastore $datastore -DiskStorageFormat Thin -VMHost $vmHost | Out-Null
 Set-VM -VM $templateName -ToTemplate -Confirm:$false
 
-# List of all servers.
-# Names and order matter here as they are used as template references and DNS
+# List of all servers, commands to set it up and the MAC address.
 $serverList = @(
     @{
         name = "PTP"
-        cmd  = "sudo hostnamectl set-hostname 'ptp' && sudo sed -i 's/server-gold/ptp/g' /etc/hosts && cd pen-testing-portal && python3 ptp.py run"
+        cmd  = "echo '$([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($guestPassword)))' | sudo -S hostnamectl set-hostname 'ptp' && echo '$([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($guestPassword)))' | sudo -S sed -i 's/server-gold/ptp/g' /etc/hosts && cd pen-testing-portal && python3 ptp.py resume"
         mac  = "10"
     },
     @{
         name = "C2"
-        cmd  = "sudo hostnamectl set-hostname 'c2' && sudo sed -i 's/server-gold/c2/g' /etc/hosts"
+        cmd  = "echo '$([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($guestPassword)))' | sudo -S hostnamectl set-hostname 'c2' && echo '$([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($guestPassword)))' | sudo -S sed -i 's/server-gold/c2/g' /etc/hosts"
         mac  = "11"
     },
     @{
         name = "Share"
-        cmd  = "sudo hostnamectl set-hostname 'share' && sudo sed -i 's/server-gold/share/g' /etc/hosts && cd samba-docker && docker-compose up -d"
+        cmd  = "echo '$([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($guestPassword)))' | sudo -S hostnamectl set-hostname 'share' && echo '$([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($guestPassword)))' | sudo -S sed -i 's/server-gold/share/g' /etc/hosts && cd samba-docker && docker-compose up -d"
         mac  = "12"
     },
     @{
         name = "Nessus"
-        cmd  = "sudo hostnamectl set-hostname 'nessus' && sudo sed -i 's/server-gold/nessus/g' /etc/hosts && cd nessus && docker-compose up -d"
+        cmd  = "echo '$([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($guestPassword)))' | sudo -S hostnamectl set-hostname 'nessus' && echo '$([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($guestPassword)))' | sudo -S sed -i 's/server-gold/nessus/g' /etc/hosts && cd nessus && docker-compose up -d"
         mac  = "13"
     },
     @{
         name = "Mattermost"
-        cmd  = "sudo hostnamectl set-hostname 'mattermost' && sudo sed -i 's/server-gold/mattermost/g' /etc/hosts && cd mattermost-docker && docker-compose up -d"
+        cmd  = "echo '$([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($guestPassword)))' | sudo -S hostnamectl set-hostname 'mattermost' && echo '$([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($guestPassword)))' | sudo -S sed -i 's/server-gold/mattermost/g' /etc/hosts && cd mattermost-docker && docker-compose up -d"
         mac  = "14"
     },
     @{
         name = "Neo4j"
-        cmd  = "sudo hostnamectl set-hostname 'neo4j' && sudo sed -i 's/server-gold/neo4j/g' /etc/hosts && cd neo4j && docker-compose up -d"
+        cmd  = "echo '$([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($guestPassword)))' | sudo -S hostnamectl set-hostname 'neo4j' && echo '$([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($guestPassword)))' | sudo -S sed -i 's/server-gold/neo4j/g' /etc/hosts && cd neo4j && docker-compose up -d"
         mac  = "15"
     },
     @{
         name = "GoPhish"
-        cmd  = "sudo hostnamectl set-hostname 'gophish' && sudo sed -i 's/server-gold/gophish/g' /etc/hosts && cd pca-gophish-composition && docker-compose up -d"
+        cmd  = "echo '$([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($guestPassword)))' | sudo -S hostnamectl set-hostname 'gophish' && echo '$([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($guestPassword)))' | sudo -S sed -i 's/server-gold/gophish/g' /etc/hosts && cd pca-gophish-composition && docker-compose up -d"
         mac  = "16"
     },
     @{
         name = "Utility"
-        cmd  = "sudo hostnamectl set-hostname 'utility' && sudo sed -i 's/server-gold/utility/g' /etc/hosts"
+        cmd  = "echo '$([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($guestPassword)))' | sudo -S hostnamectl set-hostname 'utility' && echo '$([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($guestPassword)))' | sudo -S sed -i 's/server-gold/utility/g' /etc/hosts"
         mac  = "17"
     }
     @{
         name = "RPorxy"
-        cmd  = "sudo hostnamectl set-hostname 'rproxy' && sudo sed -i 's/server-gold/rproxy/g' /etc/hosts && cd nginxProxyManager && docker-compose up -d"
+        cmd  = "echo '$([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($guestPassword)))' | sudo -S hostnamectl set-hostname 'rproxy' && echo '$([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($guestPassword)))' | sudo -S sed -i 's/server-gold/rproxy/g' /etc/hosts && cd nginxProxyManger && docker-compose up -d"
         mac  = "03"
     }
 )
+
 
 # Loop to deploy servers
 foreach ($server in $serverList) {
