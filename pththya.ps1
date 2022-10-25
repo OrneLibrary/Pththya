@@ -154,6 +154,7 @@ foreach ($server in $serverList) {
     Get-VMStartPolicy -VM $currentVM | Set-VMStartPolicy -StartAction PowerOn | Out-Null
     Start-VM -VM $currentVM | Out-Null
     Start-SleepCustom -Seconds 60 -Message "Waiting for $currentVM to fully boot..."
+    if ($server.name -notmatch "PTP") { Invoke-VMScript -VM $currentVM -guestUser 'cpt' -guestPassword $guestPassword -ScriptText 'cd pen-testing-portal && echo "y" | python3 ptp.py remove && cd ~' } 
     Invoke-VMScript -VM $currentVM -guestUser 'cpt' -guestPassword $guestPassword -ScriptText $server.cmd
     Invoke-VMScript -VM $currentVM -guestUser 'cpt' -guestPassword $guestPassword -ScriptText "sudo gpasswd --delete cpt server-gold-trusted"
     Invoke-VMScript -VM $currentVM -guestUser 'cpt' -guestPassword $guestPassword -ScriptText "sleep 1m"
