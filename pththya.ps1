@@ -22,7 +22,7 @@ $datastore = Get-NodeDatastore -vmHost $vmHost
 $guestPassword = Read-Host -Prompt "Password for CPT account on Kali and Commando" -AsSecureString
 
 # Check for correct default NIC configuration
-while ($true){
+while ($true) {
     if ((Get-VirtualSwitch -name "vswitch0" -VMHost $vmHost | Select-Object -ExpandProperty Nic) -notmatch 'vmnic5') {
         Write-Host "vSwitch0 needs to be set to vmnic5 in the Virtual Switch tab for proper deployment.`nPlease make that configuration change before continuing."  -ForegroundColor Red -BackgroundColor Black
         pause
@@ -84,7 +84,7 @@ $template = Get-Template -Name "pfSense Gold"
 $server = "pfSense"
 New-VM -Name $server -Template $template -Datastore $datastore -DiskStorageFormat Thin -VMHost $vmHost | Out-Null
 $currentVM = Get-VM -Name $server -Datastore $datastore
-Get-VMStartPolicy -VM $currentVM | Set-VMStartPolicy -StartAction PowerOn -StartOrder 1 -StartDelay 120| Out-Null
+Get-VMStartPolicy -VM $currentVM | Set-VMStartPolicy -StartAction PowerOn -StartOrder 1 -StartDelay 120 | Out-Null
 New-Snapshot -VM $currentVM -Name "Gold" -Description "Lab provided Gold image" | Out-Null
 
 
@@ -177,7 +177,7 @@ New-Snapshot -VM $currentVM -Name "Gold" -Description "Lab provided Gold image" 
 
 # Deploying Kalis
 $macCounter = 30
-for ($i=0 ; $i -lt $numOfOperators ; $i++) {
+for ($i = 0 ; $i -lt $numOfOperators ; $i++) {
     Write-Host "Deploying Kali-$i"
     New-VM -Name "Kali-$i" -Template $template -Datastore $datastore -DiskStorageFormat Thin -VMHost $vmHost | Out-Null
     $currentVM = Get-VM -Name "Kali-$i"  -Datastore $datastore
@@ -211,7 +211,7 @@ New-Snapshot -VM $currentVM -Name "Gold" -Description "Lab provided Gold image" 
 
 # Deploying Commandos
 $macCounter = 40
-for ($i=0 ; $i -lt $numOfOperators ; $i++) {
+for ($i = 0 ; $i -lt $numOfOperators ; $i++) {
     Write-Host "Deploying Commando-$i"
     New-VM -Name "Commando-$i" -Template $template -Datastore $datastore -DiskStorageFormat Thin -VMHost $vmHost | Out-Null
     $currentVM = Get-VM -Name "Commando-$i"  -Datastore $datastore

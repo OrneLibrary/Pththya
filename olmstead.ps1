@@ -24,10 +24,11 @@ $datastore = Get-NodeDatastore -vmHost $vmHost
 Write-Host "`n`nYou are about to delete the following:`n`nVMs:`n"
 foreach ($vm in (Get-VM -Datastore $datastore)) { Write-Host $vm.name }
 Write-Host "`nSwitches:"
-foreach ($switch in (Get-VirtualSwitch -VMHost $vmHost)) { if ($switch.Name -ne "vSwitch0") { Write-Host $switch.Name }}
+foreach ($switch in (Get-VirtualSwitch -VMHost $vmHost)) { if ($switch.Name -ne "vSwitch0") { Write-Host $switch.Name } }
 Pause
 Write-Host "Shutting down all VMs"
 foreach ($vm in (Get-VM -Datastore $datastore)) { if ($vm.PowerState -eq "PoweredOn") { Stop-VM -VM $vm -Confirm:$false } }
-foreach ($vm in (Get-VM -Datastore $datastore)) { Write-Host "Deleting: $vm";Remove-VM -VM $vm -DeletePermanently -Confirm:$false }
-foreach ($nic in (Get-VMHostNetworkAdapter -VMHost $vmHost)){ if (@("vmk1","vmk2").contains($nic.Name)) { Write-Host "Deleting: $nic";Remove-VMHostNetworkAdapter -Nic $nic -Confirm:$false }}
-foreach ($switch in (Get-VirtualSwitch -VMHost $vmHost)) { if ($switch.Name -ne "vSwitch0") {Write-Host "Deleting: $switch";Remove-VirtualSwitch -VirtualSwitch $switch -Confirm:$false }}
+foreach ($vm in (Get-VM -Datastore $datastore)) { Write-Host "Deleting: $vm"; Remove-VM -VM $vm -DeletePermanently -Confirm:$false }
+foreach ($template in (Get-Template -Datastore $datastore)) { Write-Host "Deleting: $template", Remove-Template -Template $template -Confirm:$false }
+foreach ($nic in (Get-VMHostNetworkAdapter -VMHost $vmHost)) { if (@("vmk1", "vmk2").contains($nic.Name)) { Write-Host "Deleting: $nic"; Remove-VMHostNetworkAdapter -Nic $nic -Confirm:$false } }
+foreach ($switch in (Get-VirtualSwitch -VMHost $vmHost)) { if ($switch.Name -ne "vSwitch0") { Write-Host "Deleting: $switch"; Remove-VirtualSwitch -VirtualSwitch $switch -Confirm:$false } }
