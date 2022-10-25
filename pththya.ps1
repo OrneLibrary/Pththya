@@ -86,6 +86,8 @@ New-VM -Name $server -Template $template -Datastore $datastore -DiskStorageForma
 $currentVM = Get-VM -Name $server -Datastore $datastore
 Get-VMStartPolicy -VM $currentVM | Set-VMStartPolicy -StartAction PowerOn -StartOrder 1 -StartDelay 120 | Out-Null
 New-Snapshot -VM $currentVM -Name "Gold" -Description "Lab provided Gold image" | Out-Null
+Start-VM -VM $currentVM | Out-Null
+Start-SleepCustom -Seconds 120 -Message "Waiting for $CurrentVM to fully boot..."
 
 # Copies Template to Node DS
 $templateName = "Server Gold-$($datastore.name)"
