@@ -87,6 +87,11 @@ $currentVM = Get-VM -Name $server -Datastore $datastore
 Get-VMStartPolicy -VM $currentVM | Set-VMStartPolicy -StartAction PowerOn -StartOrder 1 -StartDelay 120 | Out-Null
 New-Snapshot -VM $currentVM -Name "Gold" -Description "Lab provided Gold image" | Out-Null
 
+# Copies Template to Node DS
+$templateName = "Server Gold-$($datastore.name)"
+$template = Get-Template -Name "Server Gold"
+New-VM -Name $templateName -Template $template -Datastore $datastore -DiskStorageFormat Thin -VMHost $vmHost | Out-Null
+Set-VM -VM $templateName -ToTemplate -Confirm:$false
 
 # List of all servers.
 # Names and order matter here as they are used as template references and DNS
@@ -141,7 +146,7 @@ $serverList = @(
 # Loop to deploy servers
 foreach ($server in $serverList) {
     Write-Host "Deploying $($server.name)"
-    $template = Get-Template -Name "Server Gold"
+    $template = Get-Template -Name $templateName
     New-VM -Name $server.name -Template $template -Datastore $datastore -DiskStorageFormat Thin -VMHost $vmHost | Out-Null
     $currentVM = Get-VM -Name $server.name -Datastore $datastore
     $currentNIC = Get-NetworkAdapter -VM $currentVM
@@ -157,10 +162,18 @@ foreach ($server in $serverList) {
     New-Snapshot -VM $currentVM -Name "Gold" -Description "Lab provided Gold image" | Out-Null
 }
 
+# Removing Sever-Gold Template from Node Datastore
+Write-Host "Deleting: $templateName from Node."; Remove-Template -Template -Name $template -DeletePermanently -Confirm:$false
+
+# Copies Kali Template to Node DataStore
+$templateName = "Kali Gold-$($datastore.name)"
+$template = Get-Template -Name "Kali Gold"
+New-VM -Name $templateName -Template $template -Datastore $datastore -DiskStorageFormat Thin -VMHost $vmHost | Out-Null
+Set-VM -VM $templateName -ToTemplate -Confirm:$false
+$template = Get-Template -Name $templateName
 
 # Deploying CPT Kali 
 Write-Host "Deploying CPT-Kali"
-$template = Get-Template -Name "Kali Gold"
 New-VM -Name "CPT-Kali" -Template $template -Datastore $datastore -DiskStorageFormat Thin -VMHost $vmHost | Out-Null
 $currentVM = Get-VM -Name "CPT-Kali"  -Datastore $datastore
 $currentNIC = Get-NetworkAdapter -VM $currentVM
@@ -192,10 +205,18 @@ for ($i = 0 ; $i -lt $numOfOperators ; $i++) {
     $macCounter++
 }
 
+# Removing Kali-Gold Template from Node Datastore
+Write-Host "Deleting: $templateName from Node."; Remove-Template -Template -Name $template -DeletePermanently -Confirm:$false
 
-#Deploying CPT Commando
-Write-Host "Deploying CPT-Commando"
+# Copies Commando Template to Node Data Store
+$templateName = "Commando Gold-$($datastore.name)"
 $template = Get-Template -Name "Commando Gold"
+New-VM -Name $templateName -Template $template -Datastore $datastore -DiskStorageFormat Thin -VMHost $vmHost | Out-Null
+Set-VM -VM $templateName -ToTemplate -Confirm:$false
+$template = Get-Template -Name $templateName
+
+# Deploying CPT Commando
+Write-Host "Deploying CPT-Commando"
 New-VM -Name "CPT-Commando" -Template $template -Datastore $datastore -DiskStorageFormat Thin -VMHost $vmHost | Out-Null
 $currentVM = Get-VM -Name "CPT-Commando"  -Datastore $datastore
 $currentNIC = Get-NetworkAdapter -VM $currentVM
@@ -225,5 +246,9 @@ for ($i = 0 ; $i -lt $numOfOperators ; $i++) {
     New-Snapshot -VM $currentVM -Name "Gold" -Description "Lab provided Gold image" | Out-Null
     $macCounter++
 }
+
+# Removing Commando-Gold Template from Node Datastore
+Write-Host "Deleting: $templateName from Node."; Remove-Template -Template -Name $template -DeletePermanently -Confirm:$false
+
 Write-Host "`n`nDeployment finished. Look above for an errors with the process before hitting enter."
 pause
