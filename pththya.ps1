@@ -165,8 +165,10 @@ foreach ($server in $serverList) {
     New-Snapshot -VM $currentVM -Name "Gold" -Description "Lab provided Gold image" | Out-Null
 }
 
-# Removing Sever-Gold Template from Node Datastore
-Write-Host "Deleting: $templateName from Node."; Remove-Template -Template -Name $template -DeletePermanently -Confirm:$false
+# Removing Sever-Gold Template from Node Datastore with a safety check. 
+if ($template.name -match "Server Gold-$($datastore.name)"){
+    Write-Host "Deleting: $templateName from Node."; Remove-Template -Template $template -DeletePermanently -Confirm:$false
+}
 
 # Copies Kali Template to Node DataStore
 $templateName = "Kali Gold-$($datastore.name)"
@@ -208,8 +210,10 @@ for ($i = 0 ; $i -lt $numOfOperators ; $i++) {
     $macCounter++
 }
 
-# Removing Kali-Gold Template from Node Datastore
-Write-Host "Deleting: $templateName from Node."; Remove-Template -Template -Name $template -DeletePermanently -Confirm:$false
+# Removing Kali-Gold Template from Node Datastore with a safety check.
+if ($template.name -match "Kali Gold-$($datastore.name)"){
+    Write-Host "Deleting: $templateName from Node."; Remove-Template -Template $template -DeletePermanently -Confirm:$false
+}
 
 # Copies Commando Template to Node Data Store
 $templateName = "Commando Gold-$($datastore.name)"
@@ -250,8 +254,10 @@ for ($i = 0 ; $i -lt $numOfOperators ; $i++) {
     $macCounter++
 }
 
-# Removing Commando-Gold Template from Node Datastore
-Write-Host "Deleting: $templateName from Node."; Remove-Template -Template -Name $template -DeletePermanently -Confirm:$false
+# Removing Commando-Gold Template from Node Datastore with a safety check
+if ($template.name -match "Comando Gold-$($datastore.name)"){
+    Write-Host "Deleting: $templateName from Node."; Remove-Template -Template $template -DeletePermanently -Confirm:$false
+}
 
 Write-Host "`n`nDeployment finished. Look above for an errors with the process before hitting enter."
 pause
